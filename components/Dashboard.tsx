@@ -54,7 +54,7 @@ const Dashboard: React.FC<Props> = ({ result, userData }) => {
 ${result.factors.map(f => `・${f.label}: リスク倍率 x${f.hr} (${f.impact > 0 ? '+' : ''}${f.impact.toFixed(2)}年)`).join('\n')}
 
 [AIヘルスコーチからのアドバイス]
-${result.potentialGain > 0 
+${result.economic.potentialGain > 0 
   ? `あなたの体にはまだ経済的価値にして${formatMoney(result.economic.potentialGain)}分の「伸びしろ」があります。生活習慣を見直すことで、さらに健康寿命を延ばせる可能性があります。` 
   : `素晴らしい健康管理です！現在の生活習慣はあなたの強力な資産になっています。この調子で定期的な検診を受け、健康資産を守り抜きましょう。`}
 
@@ -90,9 +90,9 @@ Precision Health Manager
            <h4 className="font-bold text-blue-700 mb-2">AIヘルスコーチ</h4>
            <div className="text-slate-700 leading-relaxed">
              <strong>{userData.age}歳からの健康戦略：</strong><br/>
-             {result.potentialGain > 0 ? (
+             {result.economic.potentialGain > 0 ? (
                <span>
-                 あなたの体にはまだ経済的価値にして<span className="text-blue-600 font-bold">{formatMoney(result.potentialGain)}</span>分の「伸びしろ」があります！
+                 あなたの体にはまだ経済的価値にして<span className="text-blue-600 font-bold">{formatMoney(result.economic.potentialGain)}</span>分の「伸びしろ」があります！
                  生活習慣（特に禁煙・運動・ピロリ菌除菌）を見直すことで、健康寿命と労働価値を最大化できます。
                </span>
              ) : (
