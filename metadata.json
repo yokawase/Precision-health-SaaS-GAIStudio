@@ -1,0 +1,5 @@
+{
+  "name": "Precision Health Manager",
+  "description": "A scientific health management SaaS that analyzes life expectancy, economic impact, and symptom safety based on user inputs.",
+  "requestFramePermissions": []
+}
