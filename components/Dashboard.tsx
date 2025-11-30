@@ -15,7 +15,13 @@ const Dashboard: React.FC<Props> = ({ result, userData }) => {
     const dSign = result.diff >= 0 ? "+" : "";
     const text = `【Precision Health】\n健康資産分析結果\n\n年齢: ${userData.age}歳\n推定余命: ${result.le}年\n平均との差: ${dSign}${result.diff}年\n寿命中央値: ${result.median}歳\n\n#健康管理 #ライフプラン`;
     const url = "https://line.me/R/share?text=" + encodeURIComponent(text);
-    window.open(url, '_blank');
+    
+    // モバイル端末ではlocation.hrefを使用して確実にアプリを起動させる
+    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        window.location.href = url;
+    } else {
+        window.open(url, '_blank');
+    }
   };
 
   const copyResult = () => {
