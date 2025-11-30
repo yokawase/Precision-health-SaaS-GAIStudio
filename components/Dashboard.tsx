@@ -20,13 +20,15 @@ const Dashboard: React.FC<Props> = ({ result, userData }) => {
 平均との差: ${dSign}${result.diff}年
 寿命中央値: ${result.median}歳
 
+https://precision-health.netlify.app/
+
 #PrecisionHealth #健康資産`;
 
   // LINE公式のシェアURLスキーム (https://line.me/R/share?text=...)
   const shareUrl = `https://line.me/R/share?text=${encodeURIComponent(shareText)}`;
 
   const copyResult = () => {
-    const text = `精密余命予測結果\n年齢: ${userData.age}歳\n推定余命: ${result.le}年\n寿命中央値: ${result.median}歳\n平均との差: ${dSign}${result.diff}年`;
+    const text = `精密余命予測結果\n年齢: ${userData.age}歳\n推定余命: ${result.le}年\n寿命中央値: ${result.median}歳\n平均との差: ${dSign}${result.diff}年\nhttps://precision-health.netlify.app/`;
     navigator.clipboard.writeText(text).then(() => alert("結果をコピーしました"));
   };
 
@@ -37,6 +39,7 @@ const Dashboard: React.FC<Props> = ({ result, userData }) => {
 ============================================
 Precision Health Manager レポート
 発行日: ${dateStr}
+URL: https://precision-health.netlify.app/
 ============================================
 [基本情報]
 年齢: ${userData.age}歳 / 性別: ${userData.sex === 'male' ? '男性' : '女性'}
@@ -123,7 +126,7 @@ ${result.factors.map(f => `・${f.label}: x${f.hr}`).join('\n')}
            label="推定寿命" 
            value={result.lifespan} 
            unit="歳" 
-           sub="生存確率50%到達年齢"
+           sub={`生存確率50%到達年齢: ${result.median}歳`}
         />
         <MetricCard 
            label="平均との差 (健康ボーナス)" 
