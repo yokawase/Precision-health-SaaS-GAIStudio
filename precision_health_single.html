@@ -36,12 +36,13 @@
     <script type="text/babel" data-type="module">
         import React, { useState, useEffect } from 'https://esm.sh/react@18.2.0';
         import ReactDOM from 'https://esm.sh/react-dom@18.2.0/client';
-        import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Legend } from 'https://esm.sh/recharts@2.12.0';
+        // Add ?external=react,react-dom to prevent duplicate React instances
+        import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Legend } from 'https://esm.sh/recharts@2.12.0?external=react,react-dom';
         import { 
             User, Activity, FileText, Calculator, DollarSign, TrendingUp, AlertTriangle, 
             CheckCircle, Share2, Copy, HeartPulse, Download, Thermometer, AlertCircle, 
             ShieldCheck, XCircle, Heart, Edit3, Stethoscope, BarChart2 
-        } from 'https://esm.sh/lucide-react@0.330.0';
+        } from 'https://esm.sh/lucide-react@0.330.0?external=react';
 
         // --- CONSTANTS ---
         const HOURLY_WAGE = 1300;
@@ -344,7 +345,7 @@ ${result.factors.map(f => `・${f.label}: x${f.hr}`).join('\n')}
                         <div className="bg-blue-200 p-3 rounded-full shrink-0"><HeartPulse className="w-8 h-8 text-blue-600" /></div>
                         <div>
                             <h4 className="font-bold text-blue-700 mb-2">AIコーチ</h4>
-                            <div className="text-slate-700">{result.potentialGain>0 ? `あと${formatMoney(result.economic.potentialGain)}分の健康価値を取り戻せます！禁煙・運動から始めましょう。` : `素晴らしい管理です！この調子で維持しましょう。`}</div>
+                            <div className="text-slate-700">{result.economic.potentialGain>0 ? `あと${formatMoney(result.economic.potentialGain)}分の健康価値を取り戻せます！禁煙・運動から始めましょう。` : `素晴らしい管理です！この調子で維持しましょう。`}</div>
                         </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
