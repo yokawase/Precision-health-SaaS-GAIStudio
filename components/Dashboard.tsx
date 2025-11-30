@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { SimulationResult, UserData } from '../types';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, ReferenceLine } from 'recharts';
-import { DollarSign, TrendingUp, Share2, Copy, HeartPulse, Download } from 'lucide-react';
+import { DollarSign, TrendingUp, Share2, Copy, HeartPulse, Download, Info, AlertTriangle } from 'lucide-react';
 import StomachCancerRisk from './StomachCancerRisk';
 
 interface Props {
@@ -12,7 +12,6 @@ interface Props {
 const Dashboard: React.FC<Props> = ({ result, userData }) => {
   const formatMoney = (val: number) => `¥${Math.floor(val).toLocaleString()}`;
 
-  // LINE共有用のURLをレンダリング時に生成（JavaScriptのイベントハンドラではなく、純粋なリンクとして機能させるため）
   const dSign = result.diff >= 0 ? "+" : "";
   const shareText = `【Precision Health】診断結果
 年齢: ${userData.age}歳
@@ -24,7 +23,6 @@ https://precision-health.netlify.app/
 
 #PrecisionHealth #健康資産`;
 
-  // LINE公式のシェアURLスキーム (https://line.me/R/share?text=...)
   const shareUrl = `https://line.me/R/share?text=${encodeURIComponent(shareText)}`;
 
   const copyResult = () => {
@@ -71,7 +69,6 @@ ${result.factors.map(f => `・${f.label}: x${f.hr}`).join('\n')}
     document.getElementById('dashboard-root')?.scrollIntoView({ behavior: 'smooth' });
   }, [result]);
 
-  // アドバイス生成ロジック
   const getAiAdvice = () => {
     if (result.economic.potentialGain <= 0) {
       return <span>素晴らしい健康管理です！現在の生活習慣はあなたの強力な資産になっています。</span>;
@@ -82,7 +79,6 @@ ${result.factors.map(f => `・${f.label}: x${f.hr}`).join('\n')}
     if (userData.exercise === 'no') suggestions.push("運動習慣");
     if (userData.alcohol === 'heavy') suggestions.push("節酒");
     
-    // BMIチェック
     const bmi = userData.weight / Math.pow(userData.height / 100, 2);
     if (bmi >= 25) suggestions.push("適正体重への減量");
     if (bmi < 18.5) suggestions.push("栄養改善");
@@ -138,6 +134,51 @@ ${result.factors.map(f => `・${f.label}: x${f.hr}`).join('\n')}
         />
       </div>
 
+      {/* 75歳以上の健康リテラシーガイド (追加) */}
+      {userData.age >= 75 && (
+        <div className="bg-amber-50 rounded-lg border border-amber-200 p-6">
+           <div className="flex items-center gap-2 mb-4">
+              <AlertTriangle className="w-6 h-6 text-amber-600" />
+              <h3 className="font-bold text-lg text-amber-800">後期高齢者の検診に関する重要なお知らせ</h3>
+           </div>
+           
+           <div className="space-y-4 text-sm text-slate-700 leading-relaxed">
+              <p>
+                75歳以上の方に対するがん検診は、必ずしもすべてのケースで推奨されるわけではありません。
+                国の指針でも積極的な推奨は主に74歳までとされており、受診には個別の判断が必要です。
+              </p>
+              
+              <div className="bg-white p-4 rounded border border-amber-100 shadow-sm">
+                 <h4 className="font-bold text-amber-700 mb-2 flex items-center gap-2">
+                    🌉 「老朽化した橋」の例え
+                 </h4>
+                 <p className="text-slate-600 mb-2">
+                    75歳以上の検診は<strong>「老朽化した橋の交通規制」</strong>に似ています。
+                 </p>
+                 <ul className="list-disc list-inside space-y-1 pl-2 text-slate-600">
+                    <li><strong>現役世代（新しい橋）:</strong> 検診（通行）のメリットが大きく、修理をしてでも利用価値があります。</li>
+                    <li><strong>後期高齢者（老朽化した橋）:</strong> 無理に検診（通行）を行うと、利益よりも、検査による事故や体への負担（橋の崩落）のリスクが高まる可能性があります。</li>
+                 </ul>
+                 <p className="mt-3 text-slate-600 bg-amber-50 p-2 rounded">
+                    <strong>結論:</strong> 自治体などの対策型検診では一律の推奨（通行許可）はされませんが、個人の希望を否定するものではありません。
+                    リスク（偶発症や過剰診断）を理解した上で、<strong>かかりつけ医と相談して決めること</strong>が最も重要です。
+                 </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                 <div className="bg-white p-3 rounded border border-slate-200">
+                    <span className="font-bold text-red-600 block mb-1">⚠️ 偶発症のリスク</span>
+                    <span className="text-xs text-slate-500">胃部X線検査などでは、誤嚥や転落などの事故リスクが75歳以上で高まります。</span>
+                 </div>
+                 <div className="bg-white p-3 rounded border border-slate-200">
+                    <span className="font-bold text-amber-600 block mb-1">🔍 過剰診断の可能性</span>
+                    <span className="text-xs text-slate-500">進行が遅く寿命に影響しないがんを見つけてしまい、不要な治療を受ける不利益が生じることがあります。</span>
+                 </div>
+              </div>
+           </div>
+        </div>
+      )}
+
       {/* Stomach Cancer Risk Section */}
       {result.stomachRisk && (
         <StomachCancerRisk result={result.stomachRisk} />
@@ -150,7 +191,6 @@ ${result.factors.map(f => `・${f.label}: x${f.hr}`).join('\n')}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Current Loss Box (Gray/Red) */}
           <div className={`p-5 rounded-lg border ${result.economic.currentLoss === 0 ? 'bg-slate-50 border-slate-200' : 'bg-red-50 border-red-200'}`}>
              <div className={`font-bold text-sm mb-1 ${result.economic.currentLoss === 0 ? 'text-slate-600' : 'text-red-700'}`}>
                {result.economic.currentLoss === 0 ? '📊 労働価値損失なし' : '⚠️ 現在の推定労働価値損失'}
@@ -161,7 +201,6 @@ ${result.factors.map(f => `・${f.label}: x${f.hr}`).join('\n')}
              </div>
           </div>
 
-          {/* Potential Gain Box (Green) */}
           <div className="bg-emerald-50 p-5 rounded-lg border border-emerald-200">
              <div className="font-bold text-sm text-emerald-800 mb-1">💰 獲得可能な「追加ボーナス」</div>
              <div className="text-xs text-emerald-600 mb-2">生活習慣改善で延びる労働可能期間</div>
@@ -198,7 +237,6 @@ ${result.factors.map(f => `・${f.label}: x${f.hr}`).join('\n')}
 
       {/* Actions */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-         {/* Buttonではなく、純粋なHTMLリンク(aタグ)として実装。これによりJavaScriptの制限を受けず確実にLINEアプリが起動する */}
          <a 
            href={shareUrl}
            target="_blank"
