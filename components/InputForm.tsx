@@ -77,8 +77,9 @@ const InputForm: React.FC<Props> = ({ data, onChange, onAnalyze }) => {
             <input 
               type="number" 
               className="w-full p-3 border border-slate-300 rounded-lg"
-              value={data.height}
-              onChange={(e) => handleChange('height', parseFloat(e.target.value) || 0)}
+              value={data.height || ''}
+              onChange={(e) => handleChange('height', e.target.value === '' ? 0 : parseFloat(e.target.value))}
+              placeholder="例: 170"
             />
           </div>
           <div className="form-group">
@@ -86,8 +87,9 @@ const InputForm: React.FC<Props> = ({ data, onChange, onAnalyze }) => {
             <input 
               type="number" 
               className="w-full p-3 border border-slate-300 rounded-lg"
-              value={data.weight}
-              onChange={(e) => handleChange('weight', parseFloat(e.target.value) || 0)}
+              value={data.weight || ''}
+              onChange={(e) => handleChange('weight', e.target.value === '' ? 0 : parseFloat(e.target.value))}
+              placeholder="例: 65"
             />
           </div>
         </div>
