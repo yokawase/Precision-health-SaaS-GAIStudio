@@ -4,6 +4,7 @@ export type Smoking = 'never' | 'past' | 'current';
 export type Exercise = 'yes' | 'no';
 export type Pylori = 'unknown' | 'negative' | 'eradicated' | 'current';
 export type Polypharmacy = '0' | '1-4' | '5+';
+export type AtrophicGastritis = 'unknown' | 'yes' | 'no';
 
 export interface UserData {
   age: number;
@@ -14,6 +15,7 @@ export interface UserData {
   smoking: Smoking;
   exercise: Exercise;
   pylori: Pylori;
+  atrophic_gastritis: AtrophicGastritis;
   polypharmacy: Polypharmacy;
   fam_cancer: boolean;
   parent_long: boolean;
@@ -28,12 +30,19 @@ export interface UserData {
   inf_hpv: boolean;
 }
 
+export interface StomachCancerResult {
+  score: number; // 1-99
+  level: 'low' | 'medium' | 'high' | 'unknown';
+  advice: string;
+  contributions: { label: string; value: number; isPositive: boolean }[];
+}
+
 export interface SimulationResult {
-  le: number; // Life Expectancy (remaining years)
-  lifespan: number; // Total expected age
-  median: number; // Median age
-  diff: number; // Difference from average
-  official: number; // Official avg remaining years
+  le: number; // Life Expectancy
+  lifespan: number;
+  median: number;
+  diff: number;
+  official: number;
   curve: { age: number; survival: number; avgSurvival: number }[];
   economic: {
     currentLoss: number;
@@ -42,4 +51,5 @@ export interface SimulationResult {
     workYearsCurrent: number;
   };
   factors: { label: string; hr: number; impact: number }[];
+  stomachRisk?: StomachCancerResult;
 }
