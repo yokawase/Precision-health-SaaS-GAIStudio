@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { SimulationResult, UserData } from '../types';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, ReferenceLine } from 'recharts';
-import { DollarSign, TrendingUp, Share2, Copy, HeartPulse, Download, Info, AlertTriangle } from 'lucide-react';
+import { DollarSign, TrendingUp, Share2, Copy, HeartPulse, Download, Info, AlertTriangle, Activity } from 'lucide-react';
 import StomachCancerRisk from './StomachCancerRisk';
 
 interface Props {
@@ -52,7 +52,7 @@ BMI: ${bmi}
 改善余地: ${result.economic.potentialGain === 0 ? 'なし' : '+' + formatMoney(result.economic.potentialGain)}
 
 [詳細]
-${result.factors.map(f => `・${f.label}: x${f.hr}`).join('\n')}
+${result.factors.map(f => `・${f.label}: ${f.impact > 0 ? '+' : ''}${f.impact.toFixed(1)}年`).join('\n')}
 ============================================`;
     const blob = new Blob([reportContent], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -134,7 +134,45 @@ ${result.factors.map(f => `・${f.label}: x${f.hr}`).join('\n')}
         />
       </div>
 
-      {/* 75歳以上の健康リテラシーガイド (追加) */}
+      {/* Factor Contributions Table (New Section) */}
+      <div className="bg-white rounded-lg shadow-sm border border-slate-200 p-6">
+        <div className="border-b border-slate-100 pb-4 mb-4 font-bold text-lg text-slate-800 flex items-center gap-2">
+           <Activity className="w-5 h-5 text-blue-600" /> 寿命への影響因子（寄与年数）
+        </div>
+        <div className="space-y-3">
+          {result.factors.map((f, i) => {
+            const isPositive = f.impact >= 0;
+            const colorClass = isPositive ? 'text-emerald-600' : 'text-red-600';
+            const barColor = isPositive ? 'bg-emerald-500' : 'bg-red-500';
+            const width = Math.min(Math.abs(f.impact) * 8, 100); // Scale bar width
+
+            return (
+              <div key={i} className="flex items-center text-sm">
+                <div className="w-32 md:w-48 font-bold text-slate-600 truncate" title={f.label}>{f.label}</div>
+                <div className="flex-1 mx-3 h-2 bg-slate-100 rounded-full overflow-hidden">
+                   <div 
+                     className={`h-full ${barColor} opacity-80`} 
+                     style={{ width: `${width}%` }}
+                   />
+                </div>
+                <div className={`w-20 text-right font-mono font-bold ${colorClass}`}>
+                  {isPositive ? '+' : ''}{f.impact.toFixed(1)}年
+                </div>
+              </div>
+            );
+          })}
+          {result.factors.length === 0 && (
+            <div className="text-slate-500 text-sm text-center py-4 bg-slate-50 rounded">
+              特筆すべき影響因子はありません（標準的な健康状態です）
+            </div>
+          )}
+        </div>
+        <div className="mt-4 text-xs text-slate-400 text-right">
+          ※各因子の平均寿命に対する単独影響度の目安です
+        </div>
+      </div>
+
+      {/* 75歳以上の健康リテラシーガイド */}
       {userData.age >= 75 && (
         <div className="bg-amber-50 rounded-lg border border-amber-200 p-6">
            <div className="flex items-center gap-2 mb-4">
